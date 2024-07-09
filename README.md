@@ -1,4 +1,5 @@
 # RQWeather
+[![RQWeather GitHub CI](https://github.com/cyrusbuilt/rqweather/actions/workflows/ci.yml/badge.svg)](https://github.com/cyrusbuilt/rqweather/actions/workflows/ci.yml)
 
 RQWeather is a [NestJS-based](https://nestjs.com/) wrapper API around the [OpenWeatherMap API](https://openweathermap.org/api) intended for use with [RedQueen](https://github.com/cyrusbuilt/RedQueen) (though can certainly be used indedpendently) that also provides icon caching and compatibility with legacy (often more esoteric) clients that need good HEAD responses before the GETs (I personally use it to support apps I still develop to run on MacOS 9).
 
