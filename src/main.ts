@@ -65,7 +65,7 @@ async function bootstrap() {
     prefix: '/icons/',
   });
 
-  await app.listen(port, () => {
+  await app.listen(port, '0.0.0.0', () => {
     process.on('SIGTERM', () => gracefulShutdown(logger));
     if (isProduction) {
       process.on('uncaughtException', () => gracefulShutdown(logger));
