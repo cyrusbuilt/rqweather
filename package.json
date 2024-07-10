@@ -19,8 +19,14 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "dockerize": "docker build -t rqweather .",
+    "dockerize:linux:arm64": "docker build -t rqweather-arm64 --platform linux/arm64 .",
+    "dockerize:linux:amd64": "docker build -t rqweather-amd64 --platform linux/amd64 ",
     "docker:run": "docker run --env-file .env -p3001:3001 rqweather",
+    "docker:run:linux:arm64": "docker run --env-file .env -p3001:3001 rqweather-arm64",
+    "docker:run:linux:amd64": "docker run --env-file .env -p3001:3001 rqweather-amd64",
     "docker:export": "docker save -o rqweather-docker.tar rqweather",
+    "docker:export:linux:arm64": "docker save -o rqweather-docker-arm64.tar rqweather-arm64",
+    "docker:export:linux:amd64": "docker save -o rqweather-docker-amd64.tar rqweather-amd64",
     "env:generate": "chmod +rx ./scripts/gen-env.sh && ./scripts/gen-env.sh"
   },
   "dependencies": {
