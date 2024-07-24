@@ -15,6 +15,10 @@ $ npm install
 $ npm run env:generate
 ```
 
+## Configure
+
+Add your OpenWeatherMap API key (`WEATHER_API_KEY`) to the `.env` file and (if necessary) and adjust any other values.
+
 ## Running the app
 
 ```bash

@@ -64,8 +64,8 @@ export class WeatherController {
 
   @Get('current')
   @ApiOperation({ description: 'Gets current weather conditions' })
-  @ApiQuery({ name: 'lat', type: 'float' })
-  @ApiQuery({ name: 'lon', type: 'float' })
+  @ApiQuery({ name: 'lat', type: 'number' })
+  @ApiQuery({ name: 'lon', type: 'number' })
   @ApiResponse({
     status: HttpStatus.OK as number,
     description: 'Success',
@@ -94,8 +94,8 @@ export class WeatherController {
     description:
       'HEAD servicer for the get current weather endpoint (legacy support)',
   })
-  @ApiQuery({ name: 'lat', type: 'float' })
-  @ApiQuery({ name: 'lon', type: 'float' })
+  @ApiQuery({ name: 'lat', type: 'number' })
+  @ApiQuery({ name: 'lon', type: 'number' })
   @ApiResponse({
     status: HttpStatus.OK as number,
     description: 'Success',
@@ -115,8 +115,8 @@ export class WeatherController {
     description:
       'Gets 5-day, 3-hour weather forecast for the specified location',
   })
-  @ApiQuery({ name: 'lat', type: 'float' })
-  @ApiQuery({ name: 'lon', type: 'float' })
+  @ApiQuery({ name: 'lat', type: 'number' })
+  @ApiQuery({ name: 'lon', type: 'number' })
   @ApiResponse({
     status: HttpStatus.OK as number,
     description: 'Success',
@@ -142,12 +142,12 @@ export class WeatherController {
     return theForecast;
   }
 
-  @Head('current')
+  @Head('forecast')
   @ApiOperation({
     description: 'HEAD servicer for the get forecast endpoint (legacy support)',
   })
-  @ApiQuery({ name: 'lat', type: 'float' })
-  @ApiQuery({ name: 'lon', type: 'float' })
+  @ApiQuery({ name: 'lat', type: 'number' })
+  @ApiQuery({ name: 'lon', type: 'number' })
   @ApiResponse({
     status: HttpStatus.OK as number,
     description: 'Success',
