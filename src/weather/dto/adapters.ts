@@ -103,21 +103,18 @@ export default class Adapters {
     result.id = from.id;
     result.message = from.message;
     result.country = from.country;
-    result.sunrise = from.sunrise;
-    result.sunset = from.sunset;
+    result.sunrise = new Date(Date.UTC(1970, 0, 1, 0, 0, from.sunrise));
+    result.sunset = new Date(Date.UTC(1970, 0, 1, 0, 0, from.sunset));
     return result;
   }
 
   public static toCurrentWeather(from: OwmWeatherDTO): WeatherResponseDTO {
-    const tstamp = new Date();
-    tstamp.setSeconds(from.dt);
-
     const result = new WeatherResponseDTO();
     result.id = from.id;
     result.code = from.cod;
     result.name = from.name;
     result.base = from.base;
-    result.timestamp = tstamp;
+    result.timestamp = new Date(Date.UTC(1970, 0, 1, 0, 0, from.dt));
     result.timezone = from.timezone;
     result.visibility = from.visibility;
     result.clouds = Adapters.toClouds(from.clouds);

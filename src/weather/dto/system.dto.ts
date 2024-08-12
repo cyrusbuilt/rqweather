@@ -33,15 +33,15 @@ export class SystemDTO {
 
   @ApiProperty({
     description: 'Sunrise time, unix, UTC',
-    example: 1713783017,
-    type: 'integer',
+    example: '2024-08-12T15:27:35.000Z',
+    type: 'date',
   })
-  sunrise: number;
+  sunrise: Date;
 
   @ApiProperty({
     description: 'Sunset time, unix, UTC',
-    example: 1713831676,
-    type: 'integer',
+    example: '2024-08-12T15:27:35.000Z',
+    type: 'date',
   })
-  sunset: number;
+  sunset: Date;
 }
