@@ -32,7 +32,7 @@ export class ForecastResponseDTO {
 
   @ApiProperty({
     description: 'Aggregates of the daily forecast (daily summary)',
-    type: DailyForecastAggregateDTO,
+    type: [DailyForecastAggregateDTO],
   })
   aggregates: DailyForecastAggregateDTO[];
 }
