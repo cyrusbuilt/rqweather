@@ -1,5 +1,6 @@
 import { ForecastCityDTO } from 'src/geo/dto/forecast-city.dto';
 import { DailyForecastDTO } from './daily-forecast.dto';
+import { DailyForecastAggregateDTO } from './daily-forecast-aggregate.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ForecastResponseDTO {
@@ -28,4 +29,10 @@ export class ForecastResponseDTO {
     type: ForecastCityDTO,
   })
   city: ForecastCityDTO;
+
+  @ApiProperty({
+    description: 'Aggregates of the daily forecast (daily summary)',
+    type: DailyForecastAggregateDTO,
+  })
+  aggregates: DailyForecastAggregateDTO[];
 }
