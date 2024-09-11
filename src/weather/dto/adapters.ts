@@ -23,6 +23,11 @@ import Utils from 'src/common/utils';
 import { DailyForecastDTO } from './daily-forecast.dto';
 import { OwmForecastSysDTO } from './owm-forecast-sys.dto';
 import { ForecastSysDTO } from './forecast-sys.dto';
+import { DailyForecastAggregateDTO } from './daily-forecast-aggregate.dto';
+
+interface ForecastDictionary {
+  [key: string]: DailyForecastDTO;
+}
 
 export default class Adapters {
   public static toWeatherCondition(
@@ -56,10 +61,7 @@ export default class Adapters {
   }
 
   public static toRain(from?: OwmRainDTO): RainDTO | undefined {
-    if (!from) {
-      return undefined;
-    }
-    return new RainDTO(from['1h'], from['3h']);
+    return !from ? undefined : new RainDTO(from['1h'], from['3h']);
   }
 
   public static toForecastRain(
@@ -91,10 +93,7 @@ export default class Adapters {
   }
 
   public static toSnow(from?: OwmSnowDTO): SnowDTO | undefined {
-    if (!from) {
-      return undefined;
-    }
-    return new SnowDTO(from['1h'], from['3h']);
+    return !from ? undefined : new SnowDTO(from['1h'], from['3h']);
   }
 
   public static toSystem(from: OwmSystemDTO): SystemDTO {
@@ -133,9 +132,6 @@ export default class Adapters {
   }
 
   public static toDailyForecast(from: OwmDailyForecastDTO): DailyForecastDTO {
-    const tstamp = new Date();
-    tstamp.setSeconds(from.dt);
-
     const result = new DailyForecastDTO();
     result.clouds = Adapters.toClouds(from.clouds);
     result.main = Adapters.toMain(from.main);
@@ -143,7 +139,7 @@ export default class Adapters {
     result.rain = Adapters.toForecastRain(from.rain);
     result.snow = Adapters.toForecastSnow(from.snow);
     result.system = Adapters.toForecastSystem(from.sys);
-    result.timestamp = tstamp;
+    result.timestamp = new Date(from.dt * 1000);
     result.timestampText = from.dt_text;
     result.visibility = from.visibility;
     result.weather = from.weather.map((w) => Adapters.toWeatherCondition(w));
@@ -157,6 +153,45 @@ export default class Adapters {
     result.count = from.cnt;
     result.list = from.list.map((d) => Adapters.toDailyForecast(d));
     result.city = GeoAdapters.toForecastCity(from.city);
+
+    // Daily forecast aggregation pt 1:
+    // The 5-day 3-hour forecast returns a list of 40 weather condition records:
+    // That's 1 record for every 3 hours for a total of 8 records per day for 5 days.
+    // Here, we first chunk the records by date and compute the high and low temps
+    // for the day.
+    const agg: ForecastDictionary = {};
+    result.list.forEach((val) => {
+      const date = val.timestamp.toLocaleDateString('en-US', {
+        weekday: 'short',
+        day: 'numeric',
+      });
+      if (!agg[date]) {
+        agg[date] = val;
+      }
+
+      if (val.main.tempMax > agg[date].main.tempMax) {
+        agg[date].main.tempMax = val.main.tempMax;
+      }
+
+      if (val.main.tempMin < agg[date].main.tempMin) {
+        agg[date].main.tempMin = val.main.tempMin;
+      }
+    });
+
+    // Daily forecast aggregation pt 2:
+    // Now, we build the daily records and populate the list.
+    result.aggregates = Object.keys(agg).map((key: string, index: number) => {
+      const val = agg[key];
+      const forecast = new DailyForecastAggregateDTO();
+      forecast.dayNum = index + 1;
+      forecast.tempHigh = val.main.tempMax;
+      forecast.tempLow = val.main.tempMin;
+      forecast.icon = val.weather[0].icon;
+      forecast.dateString = key;
+      forecast.weatherType = val.weather[0].main;
+      return forecast;
+    });
+
     return result;
   }
 }
