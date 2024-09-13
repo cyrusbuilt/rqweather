@@ -49,6 +49,7 @@ export class DailyForecastDTO {
 
   @ApiProperty({
     description: 'Snow precipitation (if available)',
+    type: OmitType(SnowDTO, ['oneHour']),
     nullable: true,
     required: false,
   })
