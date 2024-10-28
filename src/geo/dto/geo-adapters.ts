@@ -28,6 +28,7 @@ export default class GeoAdapters {
     result.coordinates = GeoAdapters.toCoordinate(from.coord);
     result.country = from.country;
     result.population = from.population;
+    result.timezone = from.timezone;
 
     const sunrise = new Date();
     sunrise.setSeconds(from.sunrise);
