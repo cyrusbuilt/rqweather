@@ -23,6 +23,7 @@ import { Logger } from 'winston';
 import { ForecastResponseDTO } from './dto/forecast-response.dto';
 import { WeatherConditionDTO } from './dto/weather-condition.dto';
 import { Response } from 'express';
+import { DailyForecastAggregateDTO } from './dto/daily-forecast-aggregate.dto';
 
 @ApiTags('weather')
 @Controller('api/weather')
@@ -57,6 +58,34 @@ export class WeatherController {
 
       w.icon = `${Configuration.shared.iconCacheUrlBase}${filename}`;
       result.push(w);
+    }
+
+    return result;
+  }
+
+  private async cacheAggregateIcons(
+    aggs: DailyForecastAggregateDTO[],
+  ): Promise<DailyForecastAggregateDTO[]> {
+    const result: DailyForecastAggregateDTO[] = [];
+    const cache = Configuration.shared.iconCache;
+    for (const a of aggs) {
+      const filename = Utils.getFilenameFromUrl(a.icon);
+      const cacheFile = join(cache, filename);
+      if (!existsSync(cacheFile)) {
+        try {
+          this.logger.info(`Caching icon file: ${a.icon}`);
+          const result = await this.downloader.downloadFile(a.icon);
+          writeFileSync(cacheFile, Buffer.from(result));
+        } catch (e: any) {
+          const err = e as Error;
+          this.logger.error(
+            `Failed to download file ${a.icon} to ${cacheFile}: ${err.message}`,
+          );
+        }
+      }
+
+      a.icon = `${Configuration.shared.iconCacheUrlBase}${filename}`;
+      result.push(a);
     }
 
     return result;
@@ -139,6 +168,9 @@ export class WeatherController {
       }
     }
 
+    theForecast.aggregates = await this.cacheAggregateIcons(
+      theForecast.aggregates,
+    );
     return theForecast;
   }
 
